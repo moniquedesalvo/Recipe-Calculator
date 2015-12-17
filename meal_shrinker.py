@@ -18,7 +18,7 @@ def preprocess_tight_fractions(line):
 
 def preprocess_hyphen(line):
 	if re.search(r'(\d+)(-)', line): # removes dash if it comes after a digit
-		line = re.sub(r'(\d+)(-)()', r'\1 \3', line)
+		line = re.sub(r'(\d+)(-)', r'\1 ', line)
 	return line
 
 def find_digit_1st_part(match_str):
