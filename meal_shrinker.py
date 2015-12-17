@@ -3,7 +3,7 @@ from fractions import Fraction
 import re
 import math
 
-with open("test_recipe2.txt") as my_recipe: 
+with open("recipe.txt") as my_recipe: 
 	recipe = my_recipe.readlines()
 
 def preprocess_vulgar(line):
