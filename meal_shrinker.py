@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-import fractions
+from fractions import Fraction
 import re
 import math
 
@@ -22,7 +22,7 @@ def preprocess_hyphen(line):
 	return line
 
 def find_digit_1st_part(match_str):
-	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL):
+	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL): #(Dot.) In the default mode, this matches any character except a newline. If the DOTALL flag has been specified, this matches any character including a newline.
 		matched = re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL)
 		matched_str_beginning = matched.group(1)
 		return matched_str_beginning
@@ -33,7 +33,7 @@ def find_digit(match_str):
 	# return found digit
 	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL)
-		matched_digit = fractions.Fraction(matched.group(2))
+		matched_digit = Fraction(matched.group(2))
 		return matched_digit
 	else:
 		return False
@@ -58,7 +58,7 @@ def find_fraction(match_str):
 	# return found fraction
 	if re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL)
-		matched_frac = fractions.Fraction(matched.group(2))
+		matched_frac = Fraction(matched.group(2))
 		return matched_frac
 	else:
 		return False
@@ -83,8 +83,8 @@ def find_mixed_num(match_str):
 	# return found mixed num
 	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL)
-		num_matched = fractions.Fraction(matched.group(2))
-		matched = num_matched + fractions.Fraction(matched.group(3))
+		num_matched = Fraction(matched.group(2))
+		matched = num_matched + Fraction(matched.group(3))
 		return matched
 	else:
 		return False
@@ -97,8 +97,6 @@ def mixed_num_str_remainder(match_str):
 	else:
 		return False
 
-# def find_float(line):
-
 def halve_values(string):
 	if find_mixed_num(string):
 		string = str(find_mixed_num(string)/2)
@@ -109,13 +107,13 @@ def halve_values(string):
 	return string
 
 def post_process_value(value):
-	value = fractions.Fraction(halve_values(value))
+	value = Fraction(halve_values(value))
 	if value.denominator == 1:
 		return str(value.numerator)
 	elif value.numerator > value.denominator:
-		whole_num = int(math.floor(value))
+		whole_num = int(math.floor(value)) # math.floor() gets the whole number out of the improper fraction; floor works by rounding down to the next whole number as a float
 		frac_num = value - whole_num
-		frac_num =  str(whole_num) + " " + str(fractions.Fraction(frac_num))
+		frac_num =  str(whole_num) + " " + str(Fraction(frac_num))
 		return frac_num
 	else:
 		return str(value)
@@ -143,5 +141,3 @@ def output(line):
 	else:
 		return line
 print output(recipe)
-
-
