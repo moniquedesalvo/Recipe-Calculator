@@ -97,7 +97,6 @@ def mixed_num_str_remainder(match_str):
 	else:
 		return False
 
-s = "1.5 cups Blanched Almond Flour"
 def float_str_1st_part(match_str):
 	# return float
 	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
@@ -124,7 +123,6 @@ def float_str_remainder(match_str):
 		return matched_float_remainder
 	else:
 		return False
-print find_float(s)
 
 def halve_values(string):
 	if find_mixed_num(string):
