@@ -17,13 +17,13 @@ def preprocess_tight_fractions(line):
 	return line	
 
 def preprocess_hyphen(line):
-	if re.search(r'(\d+)(-)', line): # removes dash if it comes after a digit
+	if re.search(r'(\d+)(-)', line): # removes dash if it comes after a digit; change to leave dash there if digit is a single digit and not a fraction 
 		line = re.sub(r'(\d+)(-)', r'\1 ', line)
 	return line
 
 def find_digit_1st_part(match_str):
-	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL): #(Dot.) In the default mode, this matches any character except a newline. If the DOTALL flag has been specified, this matches any character including a newline.
-		matched = re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL): #(Dot.) In the default mode, this matches any character except a newline. If the DOTALL flag has been specified, this matches any character including a newline.
+		matched = re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL)
 		matched_str_beginning = matched.group(1)
 		return matched_str_beginning
 	else:
@@ -31,24 +31,24 @@ def find_digit_1st_part(match_str):
 
 def find_digit(match_str):
 	# return found digit
-	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL)
 		matched_digit = Fraction(matched.group(2))
 		return matched_digit
 	else:
 		return False
 
 def digit_str_remainder(match_str):
-	if re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+)(.*)', match_str, re.DOTALL)
 		matched_str_remainder = matched.group(3)
 		return matched_str_remainder
 	else:
 		return False
 
 def frac_str_1st_part(match_str):
-	if re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
 		frac_str_1st = matched.group(1)
 		return frac_str_1st
 	else:
@@ -57,23 +57,23 @@ def frac_str_1st_part(match_str):
 def find_fraction(match_str):
 	# return found fraction
 	if re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_frac = Fraction(matched.group(2))
 		return matched_frac
 	else:
 		return False
 
 def frac_str_remainder(match_str):
-	if re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_str_remainder = matched.group(3)
 		return matched_str_remainder
 	else:
 		return False
 
 def mixed_num_1st_part(match_str):
-	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_num_1st = matched.group(1)
 		return matched_num_1st
 	else:
@@ -81,8 +81,8 @@ def mixed_num_1st_part(match_str):
 
 def find_mixed_num(match_str):
 	# return found mixed num
-	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL)
 		num_matched = Fraction(matched.group(2))
 		matched = num_matched + Fraction(matched.group(3))
 		return matched
@@ -90,12 +90,41 @@ def find_mixed_num(match_str):
 		return False
 
 def mixed_num_str_remainder(match_str):
-	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL):
-		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)\s(.*)', match_str, re.DOTALL)
+	if re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+)\s(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_str_remainder = matched.group(4)
 		return matched_str_remainder
 	else:
 		return False
+
+s = "1.5 cups Blanched Almond Flour"
+def float_str_1st_part(match_str):
+	# return float
+	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
+		matched_float_1st = matched.group(1)
+		return matched_float_1st
+	else:
+		return False
+
+def find_float(match_str):
+	# return float
+	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
+		matched_float = matched.group(2)
+		return matched_float
+	else:
+		return False
+
+def float_str_remainder(match_str):
+	# return float
+	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
+		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
+		matched_float_remainder = matched.group(3)
+		return matched_float_remainder
+	else:
+		return False
+print find_float(s)
 
 def halve_values(string):
 	if find_mixed_num(string):
@@ -132,12 +161,14 @@ recipe = replace_all(recipe)
 recipe = "".join(recipe) # makes recipe a string again
 
 def output(line):
-	if find_mixed_num(line):
-		return mixed_num_1st_part(line) + post_process_value(line) + " " + output(mixed_num_str_remainder(line))
+	if find_float(line):
+		return float_str_1st_part(line) + post_process_value(line) + output(float_str_remainder(line))
+	elif find_mixed_num(line):
+		return mixed_num_1st_part(line) + post_process_value(line) +  output(mixed_num_str_remainder(line))
 	elif find_fraction(line):
-		return frac_str_1st_part(line) + post_process_value(line) + " " + output(frac_str_remainder(line))
+		return frac_str_1st_part(line) + post_process_value(line) +  output(frac_str_remainder(line))
 	elif find_digit(line):
-		return find_digit_1st_part(line) + post_process_value(line) + " " + output(digit_str_remainder(line))
+		return find_digit_1st_part(line) + post_process_value(line) + output(digit_str_remainder(line))
 	else:
 		return line
 print output(recipe)
