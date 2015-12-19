@@ -6,6 +6,8 @@ import math
 with open("recipe.txt") as my_recipe: 
 	recipe = my_recipe.readlines()
 
+ignore_keywords = ["in", "into"]
+
 def preprocess_vulgar(line):
 	# Takes a line as a string and returns back the line but with vulgar unicode fractions replaced.
 	line = line.replace('½', '1/2').replace('⅓', '1/3').replace('¼', '1/4').replace('¾', '3/4')
@@ -111,7 +113,7 @@ def find_float(match_str):
 	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
 		matched_float = matched.group(2)
-		return matched_float
+		return float(matched_float)
 	else:
 		return False
 
@@ -125,7 +127,9 @@ def float_str_remainder(match_str):
 		return False
 
 def halve_values(string):
-	if find_mixed_num(string):
+	if find_float(string):
+		string = str(find_float(string)/2)
+	elif find_mixed_num(string):
 		string = str(find_mixed_num(string)/2)
 	elif find_fraction(string):
 		string = str(find_fraction(string)/2) 
