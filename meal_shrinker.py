@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 from fractions import Fraction
+from termcolor import colored, cprint
 import re
 import math
 
@@ -174,7 +175,6 @@ def post_process_value(value):
 	else:
 		return str(value)
 
-
 def replace_all(recipe):
 	new_recipe = []
 	for line in recipe:
@@ -193,22 +193,22 @@ def output(line):
 		if find_float_into(line):
 			return float_str_1st_part(line) + str(find_float(line)) + output(float_str_remainder(line))
 		else:
-			return float_str_1st_part(line) + post_process_value(line) + output(float_str_remainder(line))
+			return float_str_1st_part(line) + colored(post_process_value(line), 'red', attrs=['bold']) + output(float_str_remainder(line))
 	elif find_mixed_num(line):
-		if find_mixed_num_into:
-			return mixed_num_1st_part(line) + str(find_mixed_num(line)) +  output(mixed_num_str_remainder(line)) #fix so that mixed num is returned, not improper frac
+		if find_mixed_num_into(line):
+			return mixed_num_1st_part(line) + str(find_mixed_num(line)) +  output(mixed_num_str_remainder(line)) 
 		else:
-			return mixed_num_1st_part(line) + post_process_value(line) +  output(mixed_num_str_remainder(line))
+			return mixed_num_1st_part(line) + colored(post_process_value(line), 'red', attrs=['bold']) + output(mixed_num_str_remainder(line))
 	elif find_fraction(line):
 		if find_frac_into(line):
 			return frac_str_1st_part(line) + str(find_fraction(line)) +  output(frac_str_remainder(line))
 		else:
-			return frac_str_1st_part(line) + post_process_value(line) +  output(frac_str_remainder(line))
+			return frac_str_1st_part(line) + colored(post_process_value(line), 'red', attrs=['bold']) + output(frac_str_remainder(line))
 	elif find_digit(line):
 		if find_digit_into(line):
 			return find_digit_1st_part(line) + str(find_digit(line)) + output(digit_str_remainder(line))
 		else:
-			return find_digit_1st_part(line) + post_process_value(line) + output(digit_str_remainder(line))
+			return find_digit_1st_part(line) + colored(post_process_value(line), 'red', attrs=['bold']) + output(digit_str_remainder(line))
 	else:
 		return line
 print output(recipe)
