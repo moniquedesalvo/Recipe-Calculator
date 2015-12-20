@@ -4,6 +4,4 @@ I have a lot of refactoring to do! I'm also planning to add much more functional
 
 To use, create a file called recipe.txt in the same folder as mealshrinker.py and termcolor.py are saved. Add your ingredients and save. Run in Terminal. 
 
-Note: Some values should not be changed, i.e.: "1 inch filets" should not be changed to "1/2 inch filets" when a recipe is halved. 
-
-Since there are so many edge cases, all values that are change will be represented in red in the terminal.  I will add a feature to allow the user to select measurements they wish to ignore before running in the terminal. 
+Note: Some values should not be changed, i.e.: "1 inch filets" should not be changed to "1/2 inch filets" when a recipe is halved. Since there are so many edge cases, all values that are change will be represented in red in the terminal.  I plan to add a feature to allow the user to select which measurements they wish to ignore before running in the terminal. 
