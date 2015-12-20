@@ -6,8 +6,6 @@ import math
 with open("recipe.txt") as my_recipe: 
 	recipe = my_recipe.readlines()
 
-ignore_keywords = ["in", "into"]
-
 def preprocess_vulgar(line):
 	# Takes a line as a string and returns back the line but with vulgar unicode fractions replaced.
 	line = line.replace('½', '1/2').replace('⅓', '1/3').replace('¼', '1/4').replace('¾', '3/4')
@@ -48,6 +46,13 @@ def digit_str_remainder(match_str):
 	else:
 		return False
 
+def find_digit_into(match_str):
+	# finds out if the word "into" is before the digit
+	if re.match(r'([^\d]*)(into\s\d+)(.*)', match_str, re.DOTALL):
+		return True
+	else:
+		return False
+
 def frac_str_1st_part(match_str):
 	if re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
@@ -58,7 +63,7 @@ def frac_str_1st_part(match_str):
 
 def find_fraction(match_str):
 	# return found fraction
-	if re.match(r'([^\d]*)(\d+/\d+)\s(.*)', match_str, re.DOTALL):
+	if re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_frac = Fraction(matched.group(2))
 		return matched_frac
@@ -70,6 +75,13 @@ def frac_str_remainder(match_str):
 		matched = re.match(r'([^\d]*)(\d+/\d+)(.*)', match_str, re.DOTALL)
 		matched_str_remainder = matched.group(3)
 		return matched_str_remainder
+	else:
+		return False
+
+def find_frac_into(match_str):
+	# finds out if the word "into" is before fraction
+	if re.match(r'([^\d]*)(into\s\d+/\d+)(.*)', match_str, re.DOTALL):
+		return True
 	else:
 		return False
 
@@ -99,8 +111,14 @@ def mixed_num_str_remainder(match_str):
 	else:
 		return False
 
+def find_mixed_num_into(match_str):
+	# finds out if the word "into" is before found mixed num
+	if re.match(r'([^\d]*)(into\s\d+\s\d+/\d+)(.*)', match_str, re.DOTALL):
+		return True
+	else:
+		return False
+
 def float_str_1st_part(match_str):
-	# return float
 	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
 		matched_float_1st = matched.group(1)
@@ -118,11 +136,17 @@ def find_float(match_str):
 		return False
 
 def float_str_remainder(match_str):
-	# return float
 	if re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL):
 		matched = re.match(r'([^\d]*)(\d+\.\d+)(.*)', match_str, re.DOTALL)
 		matched_float_remainder = matched.group(3)
 		return matched_float_remainder
+	else:
+		return False
+
+def find_float_into(match_str):
+	# finds out of the word "into" is before float
+	if re.match(r'([^\d]*)into\s(\d+\.\d+)(.*)', match_str, re.DOTALL):
+		return True
 	else:
 		return False
 
@@ -138,6 +162,7 @@ def halve_values(string):
 	return string
 
 def post_process_value(value):
+	# if halve_values(value):
 	value = Fraction(halve_values(value))
 	if value.denominator == 1:
 		return str(value.numerator)
@@ -148,6 +173,7 @@ def post_process_value(value):
 		return frac_num
 	else:
 		return str(value)
+
 
 def replace_all(recipe):
 	new_recipe = []
@@ -164,13 +190,25 @@ recipe = "".join(recipe) # makes recipe a string again
 
 def output(line):
 	if find_float(line):
-		return float_str_1st_part(line) + post_process_value(line) + output(float_str_remainder(line))
+		if find_float_into(line):
+			return float_str_1st_part(line) + str(find_float(line)) + output(float_str_remainder(line))
+		else:
+			return float_str_1st_part(line) + post_process_value(line) + output(float_str_remainder(line))
 	elif find_mixed_num(line):
-		return mixed_num_1st_part(line) + post_process_value(line) +  output(mixed_num_str_remainder(line))
+		if find_mixed_num_into:
+			return mixed_num_1st_part(line) + str(find_mixed_num(line)) +  output(mixed_num_str_remainder(line)) #fix so that mixed num is returned, not improper frac
+		else:
+			return mixed_num_1st_part(line) + post_process_value(line) +  output(mixed_num_str_remainder(line))
 	elif find_fraction(line):
-		return frac_str_1st_part(line) + post_process_value(line) +  output(frac_str_remainder(line))
+		if find_frac_into(line):
+			return frac_str_1st_part(line) + str(find_fraction(line)) +  output(frac_str_remainder(line))
+		else:
+			return frac_str_1st_part(line) + post_process_value(line) +  output(frac_str_remainder(line))
 	elif find_digit(line):
-		return find_digit_1st_part(line) + post_process_value(line) + output(digit_str_remainder(line))
+		if find_digit_into(line):
+			return find_digit_1st_part(line) + str(find_digit(line)) + output(digit_str_remainder(line))
+		else:
+			return find_digit_1st_part(line) + post_process_value(line) + output(digit_str_remainder(line))
 	else:
 		return line
 print output(recipe)
